@@ -19,10 +19,12 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!supabase) return;
-    const session = supabase.auth.session();
-    if (session?.user) {
-      router.replace("/");
-    }
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.user) {
+        router.replace("/");
+      }
+    })();
   }, [router]);
 
   async function handleLogin() {
