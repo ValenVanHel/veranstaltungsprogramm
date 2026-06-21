@@ -37,34 +37,28 @@ export default function RegisterPage() {
 
   return (
     <main className="auth-page">
-      <h1>Neue Anmeldung</h1>
-      <form onSubmit={handleRegister} className="auth-form">
-        <label>
-          E-Mail
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="name@example.org"
-          />
-        </label>
-        <label>
-          Passwort
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Passwort"
-          />
-        </label>
-        <button className="button primary" type="submit" disabled={loading || !configured}>
-          {loading ? "Registrierung..." : "Registrieren"}
-        </button>
+      <section className="panel auth-panel">
+        <div className="panel-heading">
+          <h2>Neue Anmeldung</h2>
+        </div>
+        <form onSubmit={handleRegister} className="auth-form">
+          <label>
+            E-Mail
+            <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.org" />
+          </label>
+          <label>
+            Passwort
+            <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Passwort" />
+          </label>
+          <button className="button primary" type="submit" disabled={loading || !configured}>
+            {loading ? "Registrierung..." : "Registrieren"}
+          </button>
+        </form>
         {message && <p className="status-text">{message}</p>}
-        {!configured && <p className="status-text">Registrierung ist derzeit nicht verfügbar.</p>}
-      </form>
+        <p style={{ marginTop: '1rem' }}>
+          Bereits registriert? <a href="/login">Hier einloggen</a>
+        </p>
+      </section>
     </main>
   );
 }
