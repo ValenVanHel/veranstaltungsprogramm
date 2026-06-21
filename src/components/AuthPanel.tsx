@@ -6,6 +6,7 @@ import type { SessionUser, UserRole } from "@/lib/types";
 import { roleLabel } from "@/lib/roles";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 type AuthPanelProps = {
   configured: boolean;
@@ -104,7 +105,11 @@ export function AuthPanel({
           {loading ? "Anmeldung läuft" : "Einloggen"}
         </button>
       </form>
-
+      {!user && (
+        <Link href="/register" className="button tertiary" style={{ display: 'block', marginTop: '1rem' }}>
+          Neu registrieren
+        </Link>
+      )}
       {!user && !configured && (
         <button className="button tertiary" type="button" onClick={() => setIsRegistering(!isRegistering)}>
           {isRegistering ? "Abbrechen" : "Neu registrieren"}

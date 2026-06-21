@@ -20,6 +20,7 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { loadInitialData } from "@/lib/data";
 import type { EventFiltersState, EventFormState, EventRecord, Profile, SessionUser, UserRole } from "@/lib/types";
 
+
 export default function AppShell() {
   // Deklaration der States vor ihrer Benutzung (nur einmal definiert)
   const [modalEvent, setModalEvent] = useState<EventRecord | null>(null);
@@ -486,6 +487,11 @@ export default function AppShell() {
           <span className={isSupabaseConfigured ? "connection live" : "connection demo"}>
             {isSupabaseConfigured ? "Supabase verbunden" : "Demo-Modus"}
           </span>
+          {(user?.role === 'admin' || user?.role === 'owner') && (
+            <button className="button secondary" onClick={() => document.querySelector('.role-panel')?.scrollIntoView({ behavior: 'smooth' })}>
+              Rollen verwalten
+            </button>
+          )}
         </header>
 
         <div className="layout-grid">
@@ -512,6 +518,7 @@ export default function AppShell() {
             <section className="panel empty-state">
               <h2>Bitte anmelden</h2>
               <p>Nach dem Login sehen User den aktiven Kalender. Admins und Owner erhalten zusätzlich die Pflegeoberfläche.</p>
+              
             </section>
           )}
 
