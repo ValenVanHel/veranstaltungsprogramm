@@ -488,7 +488,7 @@ export default function AppShell() {
             {isSupabaseConfigured ? "Supabase verbunden" : "Demo-Modus"}
           </span>
           {(user?.role === 'admin' || user?.role === 'owner') && (
-            <button className="button secondary" onClick={() => document.querySelector('.role-panel')?.scrollIntoView({ behavior: 'smooth' })}>
+            <button className="button secondary" onClick={() => document.getElementById('role-panel')?.scrollIntoView({ behavior: 'smooth' })}>
               Rollen verwalten
             </button>
           )}

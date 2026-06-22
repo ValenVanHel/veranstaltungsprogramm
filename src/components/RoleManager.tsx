@@ -11,7 +11,7 @@ type RoleManagerProps = {
 
 export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
   return (
-    <section className="panel role-panel">
+    <section id="role-panel" className="panel role-panel">
       <div className="panel-heading">
         <div>
           <span className="eyebrow">Owner</span>
