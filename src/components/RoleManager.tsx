@@ -10,8 +10,9 @@ type RoleManagerProps = {
 };
 
 export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
+  const hasRootOwner = profiles.some(p => p.is_root_owner);
   return (
-    <section id="role-panel" className="panel role-panel">
+    <section id="role-panel" className="panel role-panel auth-panel">
       <div className="panel-heading">
         <div>
           <span className="eyebrow">Owner</span>
@@ -21,13 +22,12 @@ export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
       </div>
       <div className="role-list">
         {profiles.map((profile) => (
-          <div className="role-row" key={profile.id}>
+          <div className="role-row" key={profile.id} style={{ alignItems: 'center' }}>
             <div>
               <strong>{profile.display_name}</strong>
               <span>{profile.login_name}</span>
             </div>
             <span className={`role-pill role-${profile.role}`}>
-              {profile.role === "owner" ? <Crown size={15} /> : profile.role === "admin" ? <Shield size={15} /> : <UserRound size={15} />}
               {roleLabel(profile.role)}{profile.is_root_owner ? " · erster Owner" : ""}
             </span>
             <select
@@ -39,6 +39,9 @@ export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
               <option value="admin">Admin</option>
               <option value="owner">Owner</option>
             </select>
+            {!hasRootOwner && profile.role === 'owner' && (
+              <button className="button tertiary" onClick={() => onChangeRole(profile, 'owner')}>Als Root-Owner setzen</button>
+            )}
           </div>
         ))}
       </div>
