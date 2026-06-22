@@ -7,9 +7,10 @@ import type { Profile, UserRole } from "@/lib/types";
 type RoleManagerProps = {
   profiles: Profile[];
   onChangeRole: (profile: Profile, role: UserRole) => void;
+  onSetRootOwner: (profile: Profile) => void;
 };
 
-export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
+export function RoleManager({ profiles, onChangeRole, onSetRootOwner }: RoleManagerProps) {
   const hasRootOwner = profiles.some(p => p.is_root_owner);
   return (
     <section id="role-panel" className="panel role-panel auth-panel">
@@ -40,7 +41,9 @@ export function RoleManager({ profiles, onChangeRole }: RoleManagerProps) {
               <option value="owner">Owner</option>
             </select>
             {!hasRootOwner && profile.role === 'owner' && (
-              <button className="button tertiary" onClick={() => onChangeRole(profile, 'owner')}>Als Root-Owner setzen</button>
+              <button className="button tertiary" onClick={() => onSetRootOwner(profile)}>
+                Als Root-Owner bestätigen
+              </button>
             )}
           </div>
         ))}

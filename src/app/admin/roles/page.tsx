@@ -25,12 +25,25 @@ export default function AdminRolesPage() {
     }
   }
 
+  async function handleSetRootOwner(profile: Profile) {
+    if (!supabase) return;
+    try {
+      const { error } = await supabase.from("profiles").update({ is_root_owner: true }).eq("id", profile.id);
+      if (error) throw error;
+      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, is_root_owner: true } : p));
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Fehler beim Setzen des Root-Owners");
+    }
+  }
+
   return (
     <main className="admin-page">
       <h1>Rollenverwaltung</h1>
       <Link href="/">Zurück zum Dashboard</Link>
       {message && <p className="status-text">{message}</p>}
-      <RoleManager profiles={profiles} onChangeRole={handleChangeRole} />
+      <RoleManager profiles={profiles} onChangeRole={handleChangeRole}
+        onSetRootOwner={handleSetRootOwner}
+      />
     </main>
   );
 }
