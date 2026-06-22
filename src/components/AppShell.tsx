@@ -19,7 +19,7 @@ import { canManageEvents, canManageRoles } from "@/lib/roles";
 import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { loadInitialData } from "@/lib/data";
 import type { EventFiltersState, EventFormState, EventRecord, Profile, SessionUser, UserRole } from "@/lib/types";
-
+import Link from "next/link";
 
 export default function AppShell() {
   // Deklaration der States vor ihrer Benutzung (nur einmal definiert)
@@ -488,9 +488,9 @@ export default function AppShell() {
             {isSupabaseConfigured ? "Supabase verbunden" : "Demo-Modus"}
           </span>
           {(user?.role === 'admin' || user?.role === 'owner') && (
-            <button className="button secondary" onClick={() => document.getElementById('role-panel')?.scrollIntoView({ behavior: 'smooth' })}>
+            <Link href="/admin/roles" className="button secondary" style={{marginLeft:'1rem'}}>
               Rollen verwalten
-            </button>
+            </Link>
           )}
         </header>
 
@@ -510,7 +510,7 @@ export default function AppShell() {
               onDemoLogin={handleDemoLogin}
             />
             {user && <StatBar events={filteredEvents} profiles={visibleProfiles} userRole={user.role} />}
-            {canEditRoles && <RoleManager profiles={visibleProfiles} onChangeRole={changeRole} />}
+            
           </aside>
 
           <section className="main-column">
