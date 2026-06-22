@@ -40,7 +40,7 @@ export function RoleManager({ profiles, onChangeRole, onSetRootOwner }: RoleMana
               <option value="admin">Admin</option>
               <option value="owner">Owner</option>
             </select>
-            {!hasRootOwner && profile.role === 'owner' && (
+            {!hasRootOwner && (
               <button className="button tertiary" onClick={() => onSetRootOwner(profile)}>
                 Als Root-Owner bestätigen
               </button>
