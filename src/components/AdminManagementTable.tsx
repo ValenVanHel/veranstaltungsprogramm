@@ -82,7 +82,6 @@ export default function AdminManagementTable({ events, profiles, userRole, onEdi
         </div>
       </section>
 
-      {isAdminArea && <UserAdminPanel currentUserRole={userRole} />}
-    </>
+          </>
   );
 }
