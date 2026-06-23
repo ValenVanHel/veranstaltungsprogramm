@@ -2,7 +2,7 @@
 
 import { RotateCcw, Trash2 } from "lucide-react";
 import { AdminDashboard } from "./AdminDashboard";
-import { UserAdminPanel } from "./UserAdminPanel";
+// UserAdminPanel entfernt
 import { formatDate, formatDateTime } from "@/lib/format";
 import type { EventRecord, Profile, UserRole } from "@/lib/types";
 
