@@ -6,7 +6,7 @@ import { AuthPanel } from "./AuthPanel";
 import { CalendarView } from "./CalendarView";
 import { EventFormPanel } from "./EventFormPanel";
 import AdminManagementTable from "./AdminManagementTable";
-import { UserAdminPanel } from "./UserAdminPanel";
+// UserAdminPanel import removed
 import { RoleManager } from "./RoleManager";
 import { ImportExportPanel } from "./ImportExportPanel";
 import { StatBar } from "./StatBar";
@@ -502,7 +502,7 @@ export default function AppShell() {
 
           {user && (
             <>
-              {canEditRoles && <UserAdminPanel currentUserRole={user.role} />}  // Benutzerverwaltung oben
+                // Benutzerverwaltung oben
               <EventFilters
                 filters={filters}
                 monthOptions={monthOptions}
