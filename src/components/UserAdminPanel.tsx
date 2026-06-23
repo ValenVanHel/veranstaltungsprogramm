@@ -45,8 +45,15 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
     return currentUserRole === "admin" || currentUserRole === "owner";
   }
 
-  function handleRoleChange(id: string, newRole: UserRole) {
+  async function handleRoleChange(id: string, newRole: UserRole) {
     if (!canManageUsers()) return;
+    // Persist role change to Supabase
+    const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', id);
+    if (error) {
+      console.error('Fehler beim Ändern der Rolle', error);
+      return;
+    }
+    // Update local state
     setUsers((users) => users.map((u) => (u.id === id ? { ...u, role: newRole } : u)));
   }
 
