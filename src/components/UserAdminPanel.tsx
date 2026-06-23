@@ -41,6 +41,11 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
     await loadUsers();
   }
 
+  function handleStatusChange(id: string, newStatus: UserStatus) {
+    if (!canManageUsers()) return;
+    setUsers((users) => users.map((u) => (u.id === id ? { ...u, status: newStatus } : u)));
+  }
+
   function loadUsers() {
     return (async () => {
       const { data, error } = await supabase.from('profiles').select('id,display_name,login_name,role');
@@ -50,11 +55,6 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
       }
       setUsers(data.map(p => ({ id: p.id, name: p.display_name, email: p.login_name, role: p.role as UserRole, status: 'active' })));
     })();
-  }
-
-  function handleStatusChange(id: string, newStatus: UserStatus) {
-    if (!canManageUsers()) return;
-    setUsers((users) => users.map((u) => (u.id === id ? { ...u, status: newStatus } : u)));
   }
 
   return (
