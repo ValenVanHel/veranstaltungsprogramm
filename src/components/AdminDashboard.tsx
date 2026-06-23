@@ -17,14 +17,14 @@ export function AdminDashboard({ currentUserRole }: AdminDashboardProps) {
     <section className="panel admin-dashboard">
       <h2>Admin Übersicht</h2>
       <div className="dashboard-tiles">
-        <Link href="/admin/users" className="tile">
-          <h3>Benutzerverwaltung</h3>
-        </Link>
         <Link href="/admin/events/new" className="tile">
           <h3>Neue Kalendereinträge</h3>
         </Link>
         <Link href="/admin/import" className="tile">
           <h3>Import / Export</h3>
+        </Link>
+        <Link href="/admin/roles" className="tile">
+          <h3>Rollen verwalten</h3>
         </Link>
       </div>
     </section>
