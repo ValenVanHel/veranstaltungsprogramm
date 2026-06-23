@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 export type UserRole = "user" | "admin" | "owner";
 export type UserStatus = "pending" | "active" | "blocked";
@@ -15,18 +16,29 @@ type UserAdminPanelProps = {
   currentUserRole: UserRole;
 };
 
-const dummyUsers: User[] = [
-  { id: "1", name: "Alice", email: "alice@example.com", role: "user", status: "pending" },
-  { id: "2", name: "Bob", email: "bob@example.com", role: "admin", status: "active" },
-  { id: "3", name: "Charlie", email: "charlie@example.com", role: "owner", status: "active" },
-];
+// Fetch real users from Supabase profiles table
+// Remove dummyUsers
 
 export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // In der echten App hier API-Aufruf zur Benutzerliste
-    setUsers(dummyUsers);
+    // Lade Benutzer aus Supabase
+    (async () => {
+      const { data, error } = await supabase.from('profiles').select('id,display_name: display_name,login_name,email:login_name,role,is_root_owner');
+      if (error) {
+        console.error('Fehler beim Laden der Profile', error);
+        return;
+      }
+      // Mappe Profile zu User-Interface
+      setUsers((data ?? []).map(p => ({
+        id: p.id,
+        name: p.display_name,
+        email: p.login_name,
+        role: p.role as UserRole,
+        status: 'active'
+      })));
+    })();
   }, []);
 
   function canManageUsers() {
