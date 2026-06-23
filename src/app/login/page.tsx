@@ -70,7 +70,6 @@ export default function LoginPage() {
         onPasswordChange={setPassword}
         onLogin={handleLogin}
         onLogout={handleLogout}
-        onDemoLogin={() => {}}
       />
     </main>
   );

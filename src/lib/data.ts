@@ -1,4 +1,4 @@
-import { getDemoEventsFromStorage, demoProfiles } from "./demo-data";
+// demo-data entfernt
 import { supabase } from "./supabase";
 import type { EventRecord, Profile } from "./types";
 
@@ -10,7 +10,7 @@ type RawEventRecord = EventRecord & {
 
 export async function loadInitialData(): Promise<{ events: EventRecord[]; profiles: Profile[] }> {
   if (!supabase) {
-    return { events: getDemoEventsFromStorage(), profiles: demoProfiles };
+    throw new Error('Supabase nicht konfiguriert');
   }
 
   const [{ data: events, error: eventsError }, { data: profiles, error: profilesError }] = await Promise.all([

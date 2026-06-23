@@ -12,7 +12,7 @@ import { ImportExportPanel } from "./ImportExportPanel";
 import { StatBar } from "./StatBar";
 import type { EventStatus } from "@/lib/types";
 import { EventFilters } from "./EventFilters";
-import { demoProfiles, saveDemoEventsToStorage, initDemoStorage } from "@/lib/demo-data";
+// Demo-Daten entfernt
 import { emptyEventForm, formFromEvent, validateEventForm } from "@/lib/event-form";
 import { emptyEventFilters, filterEvents, locationOptionsFromEvents, monthOptionsFromEvents } from "@/lib/filters";
 import { canManageEvents, canManageRoles } from "@/lib/roles";
@@ -58,7 +58,7 @@ export default function AppShell() {
 
   const canEditEvents = canManageEvents(user?.role ?? "user");
   const canEditRoles = canManageRoles(user?.role ?? "user");
-  const visibleProfiles = useMemo(() => profiles.length ? profiles : demoProfiles, [profiles]);
+  const visibleProfiles = useMemo(() => profiles, [profiles]);
   const visibleBaseEvents = useMemo(
     () => events.filter((event) => canEditEvents || event.status === "active"),
     [canEditEvents, events]
@@ -165,22 +165,6 @@ export default function AppShell() {
     setForm(emptyEventForm);
   }
 
-  function handleDemoLogin(role: UserRole) {
-    const profile = demoProfiles.find((item) => item.role === role) ?? demoProfiles[0];
-    const sessionUser = {
-      id: profile.id,
-      email: profile.login_name,
-      role: profile.role,
-      displayName: profile.display_name,
-      isRootOwner: profile.is_root_owner
-    };
-    initDemoStorage();
-    setUser(sessionUser);
-    localStorage.setItem("user", JSON.stringify(sessionUser));
-    setProfiles(demoProfiles);
-    setMessage("Demo-Modus aktiv. Supabase-Daten werden verbunden, sobald .env.local gesetzt ist.");
-  }
-
   function selectEvent(event: EventRecord) {
     setSelectedEvent(event);
     setForm(formFromEvent(event));
@@ -280,7 +264,6 @@ export default function AppShell() {
                       }
                     : event);
 
-                  if (!supabase) saveDemoEventsToStorage(updatedEvents);
                   setEvents(updatedEvents);
                   setMessage("Termin aktualisiert.");
 
@@ -313,7 +296,6 @@ export default function AppShell() {
       };
 
       const newEventList = [...events, newEvent].sort((left, right) => left.start_date.localeCompare(right.start_date));
-      if (!supabase) saveDemoEventsToStorage(newEventList);
       setEvents(newEventList);
       setMessage("Termin erstellt.");
       
@@ -345,7 +327,6 @@ export default function AppShell() {
     const updatedEvents = events.map((event) => event.id === selectedEvent.id
       ? { ...event, status: "deleted" as EventStatus, deleted_by: user.id, deleted_at: new Date().toISOString() }
       : event);
-    if (!supabase) saveDemoEventsToStorage(updatedEvents);
     setEvents(updatedEvents);
     setMessage("Termin in den Papierkorb verschoben.");
     
@@ -371,7 +352,6 @@ export default function AppShell() {
     const updatedEvents = events.map((event) => event.id === eventToRestore.id
       ? { ...event, status: "active" as EventStatus, deleted_by: null, deleted_at: null }
       : event);
-    if (!supabase) saveDemoEventsToStorage(updatedEvents);
     setEvents(updatedEvents);
     
     // Bei Supabase: Daten neu laden für aktuellen Zustand
@@ -389,7 +369,6 @@ export default function AppShell() {
       }
     }
     const updatedEvents = events.filter((event) => event.id !== eventToDelete.id);
-    if (!supabase) saveDemoEventsToStorage(updatedEvents);
     setEvents(updatedEvents);
     
     // Bei Supabase: Daten neu laden für aktuellen Zustand
@@ -447,7 +426,7 @@ export default function AppShell() {
         const mergedEvents = [...events, ...importedEvents].sort((left, right) =>
           left.start_date.localeCompare(right.start_date)
         );
-        saveDemoEventsToStorage(mergedEvents);
+        setEvents(mergedEvents);
       }
 
       // Refresh: Alle Daten neu laden
@@ -507,7 +486,6 @@ export default function AppShell() {
               onPasswordChange={setPassword}
               onLogin={handleLogin}
               onLogout={handleLogout}
-              onDemoLogin={handleDemoLogin}
             />
             {user && <StatBar events={filteredEvents} profiles={visibleProfiles} userRole={user.role} />}
             

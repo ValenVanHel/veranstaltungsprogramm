@@ -19,7 +19,6 @@ type AuthPanelProps = {
   onPasswordChange: (value: string) => void;
   onLogin: () => void;
   onLogout: () => void;
-  onDemoLogin: (role: UserRole) => void;
 };
 
 export function AuthPanel({
@@ -32,8 +31,7 @@ export function AuthPanel({
   onEmailChange,
   onPasswordChange,
   onLogin,
-  onLogout,
-  onDemoLogin
+  onLogout
 }: AuthPanelProps) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [regEmail, setRegEmail] = useState("");
@@ -56,11 +54,6 @@ export function AuthPanel({
     } catch (err) {
       setRegMessage(err instanceof Error ? err.message : "Registrierung fehlgeschlagen.");
     }
-  }
-
-  function handleDemoPointer(event: PointerEvent<HTMLButtonElement>, role: UserRole) {
-    event.preventDefault();
-    onDemoLogin(role);
   }
 
   if (user) {
@@ -130,17 +123,6 @@ export function AuthPanel({
           </button>
           {regMessage && <p className="status-text">{regMessage}</p>}
         </form>
-      )}
-
-      {!configured && (
-        <div className="demo-box">
-          <p>Supabase ist noch nicht verbunden. Für die Oberfläche kannst du direkt eine Rolle simulieren.</p>
-          <div className="segmented">
-            <button className="demo-role-button" type="button" onPointerDown={(event) => handleDemoPointer(event, "user")} onClick={() => onDemoLogin("user")}>User</button>
-            <button className="demo-role-button" type="button" onPointerDown={(event) => handleDemoPointer(event, "admin")} onClick={() => onDemoLogin("admin")}>Admin</button>
-            <button className="demo-role-button" type="button" onPointerDown={(event) => handleDemoPointer(event, "owner")} onClick={() => onDemoLogin("owner")}>Owner</button>
-          </div>
-        </div>
       )}
 
       {message && <p className="status-text">{message}</p>}
