@@ -1,25 +1,13 @@
-import React, { useEffect, useState } from "react";
-import type { UserRole } from "./UserAdminPanel";
-import type { User, UserStatus } from "./UserAdminPanel";
+import React from "react";
+import type { UserRole } from "@/lib/types";
+import Link from "next/link";
 
 export type AdminDashboardProps = {
   currentUserRole: UserRole;
-  users: User[];
 };
 
-export function AdminDashboard({ currentUserRole, users }: AdminDashboardProps) {
-  const [pendingCount, setPendingCount] = useState(0);
-  const [activeCount, setActiveCount] = useState(0);
-  const [blockedCount, setBlockedCount] = useState(0);
-
-  useEffect(() => {
-    const pending = users.filter(user => user.status === "pending").length;
-    const active = users.filter(user => user.status === "active").length;
-    const blocked = users.filter(user => user.status === "blocked").length;
-    setPendingCount(pending);
-    setActiveCount(active);
-    setBlockedCount(blocked);
-  }, [users]);
+export function AdminDashboard({ currentUserRole }: AdminDashboardProps) {
+  
 
   if (!(currentUserRole === "admin" || currentUserRole === "owner")) {
     return <p>Kein Zugriff auf Admin Dashboard.</p>;
@@ -27,12 +15,18 @@ export function AdminDashboard({ currentUserRole, users }: AdminDashboardProps) 
 
   return (
     <section className="panel admin-dashboard">
-      <h2>Admin Dashboard</h2>
-      <ul>
-        <li>Neuanmeldungen (pending): {pendingCount}</li>
-        <li>Aktive Mitglieder: {activeCount}</li>
-        <li>Gesperrte Benutzer: {blockedCount}</li>
-      </ul>
+      <h2>Admin Übersicht</h2>
+      <div className="dashboard-tiles">
+        <Link href="/admin/users" className="tile">
+          <h3>Benutzerverwaltung</h3>
+        </Link>
+        <Link href="/admin/events/new" className="tile">
+          <h3>Neue Kalendereinträge</h3>
+        </Link>
+        <Link href="/admin/import" className="tile">
+          <h3>Import / Export</h3>
+        </Link>
+      </div>
     </section>
   );
 }

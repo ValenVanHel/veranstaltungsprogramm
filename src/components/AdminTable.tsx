@@ -20,7 +20,7 @@ export default function AdminTable({ events, profiles, userRole, onEdit, onResto
 
   return (
     <>
-      {isAdminArea && <AdminDashboard currentUserRole={userRole} users={[]} />}
+      {isAdminArea && <AdminDashboard currentUserRole={userRole} />}
 
       <section className="panel table-panel">
         <div className="panel-heading">
