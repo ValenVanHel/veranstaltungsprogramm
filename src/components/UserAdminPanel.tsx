@@ -23,22 +23,7 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    // Lade Benutzer aus Supabase
-    (async () => {
-      const { data, error } = await supabase.from('profiles').select('id,display_name: display_name,login_name,email:login_name,role,is_root_owner');
-      if (error) {
-        console.error('Fehler beim Laden der Profile', error);
-        return;
-      }
-      // Mappe Profile zu User-Interface
-      setUsers((data ?? []).map(p => ({
-        id: p.id,
-        name: p.display_name,
-        email: p.login_name,
-        role: p.role as UserRole,
-        status: 'active'
-      })));
-    })();
+    void loadUsers();
   }, []);
 
   function canManageUsers() {
@@ -47,14 +32,24 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
 
   async function handleRoleChange(id: string, newRole: UserRole) {
     if (!canManageUsers()) return;
-    // Persist role change to Supabase
     const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', id);
     if (error) {
       console.error('Fehler beim Ändern der Rolle', error);
       return;
     }
-    // Update local state
-    setUsers((users) => users.map((u) => (u.id === id ? { ...u, role: newRole } : u)));
+    // Aktualisiere Liste neu
+    await loadUsers();
+  }
+
+  function loadUsers() {
+    return (async () => {
+      const { data, error } = await supabase.from('profiles').select('id,display_name,login_name,role');
+      if (error) {
+        console.error('Fehler beim Laden der Profile', error);
+        return;
+      }
+      setUsers(data.map(p => ({ id: p.id, name: p.display_name, email: p.login_name, role: p.role as UserRole, status: 'active' })));
+    })();
   }
 
   function handleStatusChange(id: string, newStatus: UserStatus) {
