@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+// Komponente entfernt
 import { supabase } from "@/lib/supabase";
 
 export type UserRole = "user" | "admin" | "owner";
@@ -60,7 +60,7 @@ export function UserAdminPanel({ currentUserRole }: UserAdminPanelProps) {
   return (
     <section className="panel user-admin-panel">
       <header>
-        <h2>Benutzerverwaltung</h2>
+        <h2></h2>
       </header>
       <table>
         <thead>
