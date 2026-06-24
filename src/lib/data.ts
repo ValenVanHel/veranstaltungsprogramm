@@ -13,26 +13,21 @@ export async function loadInitialData(): Promise<{ events: EventRecord[]; profil
     throw new Error('Supabase nicht konfiguriert');
   }
 
+
   const [{ data: events, error: eventsError }, { data: profiles, error: profilesError }] = await Promise.all([
     supabase
       .from("events")
-      .select("*, event_responsible(responsible_people(name))")
+      .select("*")
       .order("start_date", { ascending: true }),
     supabase.from("profiles").select("id, display_name, login_name, role, is_root_owner")
   ]);
+
 
   if (eventsError) throw eventsError;
   if (profilesError) throw profilesError;
 
   return {
-    events: ((events ?? []) as RawEventRecord[]).map((event) => ({
-      ...event,
-      responsible_names: Array.isArray(event.event_responsible)
-        ? event.event_responsible
-            .map((entry) => entry.responsible_people?.name)
-            .filter((name): name is string => Boolean(name))
-        : []
-    })),
+    events: (events ?? []) as EventRecord[],
     profiles: (profiles ?? []) as Profile[]
   };
 }
