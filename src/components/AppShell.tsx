@@ -560,12 +560,12 @@ export default function AppShell() {
                     onNew={startNewEvent}
                     onTrash={moveToTrash}
                   />
-                  <ImportExportPanel 
+                  {/* <ImportExportPanel 
                     events={filteredEvents} 
                     profiles={visibleProfiles}
                     userId={user.id}
                     onImportComplete={handleImport}
-                  />
+                  /> */}
                 </div>
               )}
               {/* {canEditEvents && (
