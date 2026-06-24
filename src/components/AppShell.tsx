@@ -455,6 +455,8 @@ export default function AppShell() {
         // Insert only valid columns; start_time and more_info removed to match schema
         const { data, error } = await supabase.from("events").insert({
           location_name: formData.location_name.trim(),
+          start_time: formData.start_time,
+          more_info: formData.more_info,
           start_date: formData.start_date,
           end_date: formData.end_active ? formData.end_date || formData.start_date : null,
           end_active: formData.end_active,
