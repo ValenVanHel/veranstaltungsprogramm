@@ -452,7 +452,7 @@ export default function AppShell() {
       setLoading(true);
       // Insert in Supabase
       if (supabase) {
-        const { error } = await supabase.from("events").insert({
+        const { data, error } = await supabase.from("events").insert({
           location_name: formData.location_name.trim(),
           start_date: formData.start_date,
           end_date: formData.end_active ? formData.end_date || formData.start_date : null,
@@ -464,6 +464,7 @@ export default function AppShell() {
           created_by: user.id
         });
         if (error) throw error;
+        console.log("saveNewEvent insert result:", { data, error });
       }
       await loadData();
       setAdminForm(emptyEventForm);
