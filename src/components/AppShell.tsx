@@ -591,8 +591,8 @@ export default function AppShell() {
                     selectedEvent={null}
                     errors={adminErrors}
                     canDelete={false}
-                    onChange={patch => setAdminForm(f => ({ ...f, ...patch }))
-                    onSubmit={() => void saveNewEvent(adminForm)}
+                    onChange={patch => setAdminForm(f => ({ ...f, ...patch }))}
+                    onSubmit={() => { void saveNewEvent(adminForm); }}
                     onNew={() => {
                       setAdminForm(emptyEventForm);
                       setAdminErrors([]);
