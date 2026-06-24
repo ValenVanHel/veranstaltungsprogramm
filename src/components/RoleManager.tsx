@@ -8,9 +8,10 @@ type RoleManagerProps = {
   profiles: Profile[];
   onChangeRole: (profile: Profile, role: UserRole) => void;
   onSetRootOwner: (profile: Profile) => void;
+  onUnsetRootOwner: (profile: Profile) => void;
 };
 
-export function RoleManager({ profiles, onChangeRole, onSetRootOwner }: RoleManagerProps) {
+export function RoleManager({ profiles, onChangeRole, onSetRootOwner, onUnsetRootOwner }: RoleManagerProps) {
   const hasRootOwner = profiles.some(p => p.is_root_owner);
   return (
     <section id="role-panel" className="panel role-panel auth-panel">
@@ -42,14 +43,14 @@ export function RoleManager({ profiles, onChangeRole, onSetRootOwner }: RoleMana
             </select>
             {
               profile.is_root_owner ? (
-                <button className="button danger" onClick={() => onSetRootOwner(profile)}>
+                <button className="button danger" onClick={() => onUnsetRootOwner(profile)}>
                   Root-Owner abwählen
                 </button>
               ) : !hasRootOwner && (
-              <button className="button tertiary" onClick={() => onSetRootOwner(profile)}>
-                Als Root-Owner bestätigen
-              </button>
-            )}
+                <button className="button tertiary" onClick={() => onSetRootOwner(profile)}>
+                  Als Root-Owner bestätigen
+                </button>
+              )}
           </div>
         ))}
       </div>

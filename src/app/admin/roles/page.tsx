@@ -36,6 +36,17 @@ export default function AdminRolesPage() {
     }
   }
 
+  async function handleUnsetRootOwner(profile: Profile) {
+    if (!supabase) return;
+    try {
+      const { error } = await supabase.from("profiles").update({ is_root_owner: false }).eq("id", profile.id);
+      if (error) throw error;
+      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, is_root_owner: false } : p));
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Fehler beim Entfernen des Root-Owners");
+    }
+  }
+
   return (
     <main className="admin-page">
       <h1>Rollenverwaltung</h1>
@@ -43,6 +54,7 @@ export default function AdminRolesPage() {
       {message && <p className="status-text">{message}</p>}
       <RoleManager profiles={profiles} onChangeRole={handleChangeRole}
         onSetRootOwner={handleSetRootOwner}
+        onUnsetRootOwner={handleUnsetRootOwner}
       />
     </main>
   );
