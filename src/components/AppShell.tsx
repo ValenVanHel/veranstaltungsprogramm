@@ -560,15 +560,15 @@ export default function AppShell() {
                     onNew={startNewEvent}
                     onTrash={moveToTrash}
                   />
-                  <ImportExportPanel 
+                  {/* <ImportExportPanel 
                     events={filteredEvents} 
                     profiles={visibleProfiles}
                     userId={user.id}
                     onImportComplete={handleImport}
-                  />
+                  /> */}
                 </div>
               )}
-              {canEditEvents && (
+              {/* {canEditEvents && (
                 <AdminManagementTable
                   events={filteredEvents}
                   profiles={visibleProfiles}
@@ -577,7 +577,7 @@ export default function AppShell() {
                   onRestore={restoreEvent}
                   onDeleteForever={deleteForever}
                 />
-              )}
+              )} */}
             </>
           )}
         </section>
