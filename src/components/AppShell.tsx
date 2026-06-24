@@ -439,6 +439,42 @@ export default function AppShell() {
     }
   }
 
+  // Admin-only Formular
+  const [adminForm, setAdminForm] = useState<EventFormState>(emptyEventForm);
+  const [adminErrors, setAdminErrors] = useState<string[]>([]);
+
+  /** Speichert nur neue Events aus dem Admin-Formular */
+  async function saveNewEvent(formData: EventFormState) {
+    const validationErrors = validateEventForm(formData);
+    setAdminErrors(validationErrors);
+    if (validationErrors.length || !user) return;
+    try {
+      setLoading(true);
+      // Insert in Supabase
+      if (supabase) {
+        const { error } = await supabase.from("events").insert({
+          location_name: formData.location_name.trim(),
+          start_date: formData.start_date,
+          end_date: formData.end_active ? formData.end_date || formData.start_date : null,
+          end_active: formData.end_active,
+          action_name: formData.action_name.trim(),
+          start_time: formData.start_time,
+          more_info: formData.more_info,
+          status: "active",
+          created_by: user.id
+        });
+        if (error) throw error;
+      }
+      await loadData();
+      setAdminForm(emptyEventForm);
+      setMessage("Termin erstellt.");
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Fehler beim Erstellen des Termins");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       {!isHydrated && (
@@ -551,33 +587,26 @@ export default function AppShell() {
               {canEditEvents && (
                 <div className="admin-grid">
                   <EventFormPanel
-                    form={form}
-                    selectedEvent={selectedEvent}
-                    errors={errors}
-                    canDelete={user.role === "admin" || user.role === "owner"}
-                    onChange={(patch) => setForm((currentForm) => ({ ...currentForm, ...patch }))}
-                    onSubmit={saveEvent}
-                    onNew={startNewEvent}
-                    onTrash={moveToTrash}
+                    form={adminForm}
+                    selectedEvent={null}
+                    errors={adminErrors}
+                    canDelete={false}
+                    onChange={patch => setAdminForm(f => ({ ...f, ...patch }))
+                    onSubmit={() => void saveNewEvent(adminForm)}
+                    onNew={() => {
+                      setAdminForm(emptyEventForm);
+                      setAdminErrors([]);
+                    }}
+                    onTrash={() => {}}
                   />
-                  {/* <ImportExportPanel 
+                  <ImportExportPanel 
                     events={filteredEvents} 
                     profiles={visibleProfiles}
                     userId={user.id}
                     onImportComplete={handleImport}
-                  /> */}
+                  />
                 </div>
               )}
-              {/* {canEditEvents && (
-                <AdminManagementTable
-                  events={filteredEvents}
-                  profiles={visibleProfiles}
-                  userRole={user.role}
-                  onEdit={selectEvent}
-                  onRestore={restoreEvent}
-                  onDeleteForever={deleteForever}
-                />
-              )} */}
             </>
           )}
         </section>
