@@ -37,8 +37,34 @@ export default function LoginPage() {
       return;
     }
     const authUser = data.user;
-    const initial = await loadInitialData();
-    const profile = initial.profiles.find(p => p.id === authUser.id);
+
+    // Prüfen, ob Profil existiert
+    const { data: existingProfiles, error: profileError } = await supabase
+      .from("profiles")
+      .select("id, display_name, login_name, role, is_root_owner")
+      .eq("id", authUser.id);
+    if (profileError) {
+      setMessage("Fehler beim Laden des Profils");
+      setLoading(false);
+      return;
+    }
+
+    let profile = null;
+    if (!existingProfiles || existingProfiles.length === 0) {
+      // Profil anlegen, wenn nicht vorhanden
+      const { data: createdProfiles, error: createError } = await supabase
+        .from("profiles")
+        .insert([{ id: authUser.id, login_name: authUser.email, display_name: authUser.email, role: "user", is_root_owner: false }]);
+      if (createError) {
+        setMessage("Fehler beim Erstellen des Profils");
+        setLoading(false);
+        return;
+      }
+      profile = createdProfiles ? createdProfiles[0] : null;
+    } else {
+      profile = existingProfiles[0];
+    }
+
     const sessionUser = {
       id: authUser.id,
       email: authUser.email ?? profile?.login_name ?? email,
