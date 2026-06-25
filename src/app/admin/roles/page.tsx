@@ -14,34 +14,50 @@ export default function AdminRolesPage() {
     void loadInitialData().then(data => setProfiles(data.profiles)).catch(err => setMessage(err.message));
   }, []);
 
+  async function sendProfileMutation(action: "change-role" | "set-root-owner" | "unset-root-owner", profile: Profile, role?: UserRole) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    if (!accessToken) {
+      throw new Error("Keine aktive Sitzung gefunden.");
+    }
+
+    const response = await fetch("/api/admin/profiles", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ action, profileId: profile.id, role })
+    });
+
+    const payload = await response.json().catch(() => ({} as { error?: string }));
+    if (!response.ok) {
+      throw new Error(payload.error || "Änderung konnte nicht gespeichert werden.");
+    }
+  }
+
   async function handleChangeRole(profile: Profile, role: UserRole) {
-    if (!supabase) return;
     try {
-      const { error } = await supabase.from("profiles").update({ role }).eq("id", profile.id);
-      if (error) throw error;
-      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, role } : p));
+      await sendProfileMutation("change-role", profile, role);
+      await loadInitialData().then(data => setProfiles(data.profiles));
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Fehler beim Ändern der Rolle");
     }
   }
 
   async function handleSetRootOwner(profile: Profile) {
-    if (!supabase) return;
     try {
-      const { error } = await supabase.from("profiles").update({ is_root_owner: true }).eq("id", profile.id);
-      if (error) throw error;
-      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, is_root_owner: true } : p));
+      await sendProfileMutation("set-root-owner", profile);
+      await loadInitialData().then(data => setProfiles(data.profiles));
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Fehler beim Setzen des Root-Owners");
     }
   }
 
   async function handleUnsetRootOwner(profile: Profile) {
-    if (!supabase) return;
     try {
-      const { error } = await supabase.from("profiles").update({ is_root_owner: false }).eq("id", profile.id);
-      if (error) throw error;
-      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, is_root_owner: false } : p));
+      await sendProfileMutation("unset-root-owner", profile);
+      await loadInitialData().then(data => setProfiles(data.profiles));
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Fehler beim Entfernen des Root-Owners");
     }

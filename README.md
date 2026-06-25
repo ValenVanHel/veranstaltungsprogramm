@@ -27,7 +27,10 @@ In `.env.local` müssen die Supabase-Werte gesetzt werden:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://DEIN-PROJEKT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=DEIN_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY=DEIN_SERVICE_ROLE_KEY
 ```
+
+Die Rollenverwaltung nutzt den Service-Role-Key serverseitig, damit Role- und Root-Owner-Änderungen nicht an RLS-Regeln im Browser scheitern.
 
 Ohne Supabase-Werte startet die Oberfläche im Demo-Modus mit Beispieldaten.
 
