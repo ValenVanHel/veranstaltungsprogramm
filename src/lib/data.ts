@@ -17,7 +17,7 @@ export async function loadInitialData(): Promise<{ events: EventRecord[]; profil
   const [{ data: events, error: eventsError }, { data: profiles, error: profilesError }] = await Promise.all([
     supabase
       .from("events")
-      .select("*")
+      .select("*, event_responsible(responsible_people(name))")
       .order("start_date", { ascending: true }),
     supabase.from("profiles").select("id, display_name, login_name, role, is_root_owner")
   ]);
@@ -26,8 +26,15 @@ export async function loadInitialData(): Promise<{ events: EventRecord[]; profil
   if (eventsError) throw eventsError;
   if (profilesError) throw profilesError;
 
+  const normalizedEvents: EventRecord[] = ((events ?? []) as RawEventRecord[]).map((event) => ({
+    ...event,
+    responsible_names: (event.event_responsible ?? [])
+      .map((relation) => relation.responsible_people?.name)
+      .filter((name): name is string => typeof name === "string" && name.length > 0)
+  }));
+
   return {
-    events: (events ?? []) as EventRecord[],
+    events: normalizedEvents,
     profiles: (profiles ?? []) as Profile[]
   };
 }

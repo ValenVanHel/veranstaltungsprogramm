@@ -10,6 +10,8 @@ interface EventModalProps {
 }
 
 export default function EventModal({ event, creator, onClose, role }: EventModalProps) {
+  const responsibleNames = Array.isArray(event.responsible_names) ? event.responsible_names : [];
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -21,7 +23,7 @@ export default function EventModal({ event, creator, onClose, role }: EventModal
           <div><b>Ort:</b> {event.location_name}</div>
           {event.end_active && event.end_date && <div><b>Enddatum:</b> {formatDate(event.end_date)}</div>}
           {event.more_info && <div><b>Weitere Infos:</b> {event.more_info}</div>}
-          {event.responsible_names.length > 0 && <div><b>Verantwortliche:</b> {event.responsible_names.join(", ")}</div>}
+          {responsibleNames.length > 0 && <div><b>Verantwortliche:</b> {responsibleNames.join(", ")}</div>}
           {(role === "admin" || role === "owner") && (
             <>
               <div><b>Erstellt von:</b> {creator?.display_name || event.created_by}</div>
