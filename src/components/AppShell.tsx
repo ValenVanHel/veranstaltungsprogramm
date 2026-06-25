@@ -353,6 +353,7 @@ export default function AppShell() {
       ? { ...event, status: "active" as EventStatus, deleted_by: null, deleted_at: null }
       : event);
     setEvents(updatedEvents);
+    setMessage("Termin wieder aktiviert.");
     
     // Bei Supabase: Daten neu laden für aktuellen Zustand
     if (supabase) {
@@ -578,6 +579,7 @@ export default function AppShell() {
                           onSubmit={() => { setModalEvent(null); setSelectedEvent(null); setShowEdit(false); saveEvent(); }}
                           onNew={startNewEvent}
                           onTrash={moveToTrash}
+                          onRestore={() => { setModalEvent(null); setSelectedEvent(null); setShowEdit(false); if (modalEvent) { void restoreEvent(modalEvent); } }}
                         />
                         <button className="modal-close" onClick={() => setShowEdit(false)} style={{ position: 'absolute', right: 20, top: 10, fontSize: 24 }}>×</button>
                       </div>
@@ -600,6 +602,7 @@ export default function AppShell() {
                       setAdminErrors([]);
                     }}
                     onTrash={() => {}}
+                    onRestore={() => {}}
                   />
                   <ImportExportPanel 
                     events={filteredEvents} 

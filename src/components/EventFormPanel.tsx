@@ -1,6 +1,6 @@
 "use client";
 
-import { Save, Trash2 } from "lucide-react";
+import { RotateCcw, Save, Trash2 } from "lucide-react";
 import { maxActionLength, maxLocationLength, maxMoreInfoLength, standardLocations } from "@/lib/constants";
 import type { EventFormState, EventRecord } from "@/lib/types";
 
@@ -13,9 +13,12 @@ type EventFormPanelProps = {
   onSubmit: () => void;
   onNew: () => void;
   onTrash: () => void;
+  onRestore: () => void;
 };
 
-export function EventFormPanel({ form, selectedEvent, errors, canDelete, onChange, onSubmit, onNew, onTrash }: EventFormPanelProps) {
+export function EventFormPanel({ form, selectedEvent, errors, canDelete, onChange, onSubmit, onNew, onTrash, onRestore }: EventFormPanelProps) {
+  const isDeletedEvent = selectedEvent?.status === "deleted";
+
   return (
     <section className="panel form-panel">
       <div className="panel-heading">
@@ -107,6 +110,12 @@ export function EventFormPanel({ form, selectedEvent, errors, canDelete, onChang
           <Save size={16} />
           {selectedEvent ? "Aktualisieren" : "Speichern"}
         </button>
+        {canDelete && isDeletedEvent && (
+          <button className="button secondary" type="button" onClick={onRestore}>
+            <RotateCcw size={16} />
+            Wieder aktivieren
+          </button>
+        )}
         {canDelete && selectedEvent && selectedEvent.status === "active" && (
           <button className="button danger" type="button" onClick={onTrash}>
             <Trash2 size={16} />
