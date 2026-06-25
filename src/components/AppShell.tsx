@@ -541,7 +541,6 @@ export default function AppShell() {
 
           {user && (
             <>
-                // Benutzerverwaltung oben
               <EventFilters
                 filters={filters}
                 monthOptions={monthOptions}
