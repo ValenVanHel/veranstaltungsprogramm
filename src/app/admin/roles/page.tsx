@@ -18,7 +18,7 @@ export default function AdminRolesPage() {
     if (!supabase) return;
     try {
       const validRoles = ['user','admin','owner'];
-      const stringRole = typeof role === 'string' ? role : validRoles[role as unknown as number] ?? 'user';
+      const stringRole = (typeof role === 'string' ? role : validRoles[role as number] ?? 'user') as UserRole;
       const { error } = await supabase.from("profiles").update({ role: stringRole }).eq("id", profile.id);
       if (error) throw error;
       setProfiles(current => current.map(p => p.id === profile.id ? { ...p, role: stringRole } : p));
