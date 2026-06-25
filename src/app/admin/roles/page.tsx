@@ -17,11 +17,9 @@ export default function AdminRolesPage() {
   async function handleChangeRole(profile: Profile, role: UserRole) {
     if (!supabase) return;
     try {
-      const validRoles = ['user','admin','owner'];
-      const stringRole = (typeof role === 'string' ? role : validRoles[role as number] ?? 'user') as UserRole;
-      const { error } = await supabase.from("profiles").update({ role: stringRole }).eq("id", profile.id);
+      const { error } = await supabase.from("profiles").update({ role }).eq("id", profile.id);
       if (error) throw error;
-      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, role: stringRole } : p));
+      setProfiles(current => current.map(p => p.id === profile.id ? { ...p, role } : p));
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Fehler beim Ändern der Rolle");
     }
